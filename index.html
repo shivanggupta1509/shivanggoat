@@ -401,7 +401,7 @@
     </div>
 
     <div class="player-container">
-        <video id="video-player" autoplay muted playsinline></video> <!-- Added muted back -->
+        <video id="video-player" autoplay muted playsinline></video>
         <div class="buffering-text" id="buffering-text">Buffering...</div>
     </div>
 
@@ -467,10 +467,12 @@
             const fallbackStream = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
             let hls;
             let isLive = true;
+            let isBuffering = false;
 
             function initPlayer(streamUrl) {
                 console.log('Initializing player with URL:', streamUrl);
                 bufferingText.style.display = 'block'; // Show buffering initially
+                isBuffering = true;
                 
                 if (Hls.isSupported()) {
                     hls = new Hls({
@@ -499,12 +501,13 @@
                         video.play().catch(e => {
                             console.error('Autoplay failed:', e);
                             bufferingText.textContent = 'Click to play';
-                            bufferingText.style.display = 'block';
+                            isBuffering = true;
                         });
                     });
                     
                     hls.on(Hls.Events.ERROR, function(event, data) {
                         console.error('HLS Error:', data);
+                        isBuffering = true;
                         bufferingText.style.display = 'block';
                         if (data.fatal) {
                             switch(data.type) {
@@ -537,13 +540,12 @@
 
                     hls.on(Hls.Events.BUFFER_APPENDING, () => {
                         console.log('Buffering data...');
-                        bufferingText.style.display = 'block';
+                        if (!video.paused && video.currentTime === 0) {
+                            isBuffering = true;
+                            bufferingText.style.display = 'block';
+                        }
                     });
 
-                    hls.on(Hls.Events.BUFFER_APPENDED, () => {
-                        console.log('Buffer appended');
-                    });
-                    
                     setInterval(checkLiveStatus, 3000);
                 } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                     console.log('Native HLS support detected');
@@ -555,6 +557,7 @@
                     console.error('HLS not supported by browser');
                     bufferingText.textContent = 'Browser does not support HLS';
                     bufferingText.style.display = 'block';
+                    isBuffering = true;
                 }
             }
 
@@ -583,34 +586,54 @@
                 if (video.paused) {
                     video.play().then(() => {
                         playPauseBtn.textContent = '⏸';
+                        isBuffering = false;
                         bufferingText.style.display = 'none';
-                    }).catch(e => console.error('Play failed:', e));
+                    }).catch(e => {
+                        console.error('Play failed:', e);
+                        bufferingText.textContent = 'Error playing, retrying...';
+                        bufferingText.style.display = 'block';
+                    });
                 } else {
                     video.pause();
                     playPauseBtn.textContent = '▶';
+                    isBuffering = false;
+                    bufferingText.style.display = 'none';
                 }
             }
 
             video.addEventListener('waiting', () => {
                 console.log('Video waiting event');
+                isBuffering = true;
                 bufferingText.style.display = 'block';
             });
 
             video.addEventListener('playing', () => {
                 console.log('Video playing event');
+                isBuffering = false;
                 bufferingText.style.display = 'none';
             });
 
             video.addEventListener('canplay', () => {
                 console.log('Video can play');
-                bufferingText.style.display = 'none';
+                if (!video.paused) {
+                    isBuffering = false;
+                    bufferingText.style.display = 'none';
+                }
                 video.play().catch(e => console.error('Autoplay after canplay failed:', e));
             });
 
             video.addEventListener('stalled', () => {
                 console.log('Video stalled');
+                isBuffering = true;
                 bufferingText.textContent = 'Stalled, retrying...';
                 bufferingText.style.display = 'block';
+            });
+
+            video.addEventListener('timeupdate', () => {
+                if (video.currentTime > 0 && !video.paused && isBuffering) {
+                    isBuffering = false;
+                    bufferingText.style.display = 'none';
+                }
             });
 
             fullscreenBtn.addEventListener('click', () => {

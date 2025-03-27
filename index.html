@@ -1,50 +1,775 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Built By Shivang</title>
+    <title>Live Stream - Built by Shivang</title>
     <style>
-        /* Fullscreen iframe */
-        html, body {
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;600&family=Russo+One&display=swap');
+
+        :root {
+            --primary: #00c6ff;
+            --secondary: #ff00ff;
+            --dark: #0d0d0d;
+            --darker: #1a1a1a;
+            --light: #ffffff;
+        }
+
+        body {
             margin: 0;
             padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--dark), var(--darker));
+            color: var(--light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .top-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .title {
+            font-family: 'Russo One', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #00ffff, #9933ff, #0066ff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            margin-bottom: 5px;
+            position: relative;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+        }
+
+        .viewer-count {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 8px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 198, 255, 0.3);
+        }
+
+        .viewer-count::before {
+            content: "🔴";
+            margin-right: 8px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .follow-btn {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+
+        .follow-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+        }
+
+        .player-container {
+            position: relative;
+            width: 90%;
+            max-width: 1100px;
+            background: black;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 198, 255, 0.3);
+            overflow: hidden;
+            border: 3px solid;
+            border-image: linear-gradient(45deg, var(--primary), var(--secondary)) 1;
+            margin-bottom: 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .player-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 198, 255, 0.5);
+        }
+
+        #video-player {
+            width: 100%;
+            display: block;
+            background: black;
+            cursor: pointer;
+        }
+
+        .buffering-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: none;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            z-index: 10;
+        }
+
+        .controls-container {
+            width: 90%;
+            max-width: 1100px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px 0;
+            z-index: 5;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 50%;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            box-shadow: 0 0 15px rgba(0, 198, 255, 0.2);
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 198, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        .control-btn.active {
+            background: var(--primary);
+            color: black;
+        }
+
+        .progress-container {
+            width: 90%;
+            max-width: 1100px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 20px 0;
+            z-index: 5;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 5px;
+            width: 0%;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .progress-container:hover .progress-bar::after {
+            opacity: 1;
+        }
+
+        .time-display {
+            font-size: 1.2rem;
+            color: white;
+            margin: 0 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .quality-selector {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .quality-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+
+        .quality-btn:hover {
+            background: rgba(0, 198, 255, 0.5);
+        }
+
+        .quality-menu {
+            position: absolute;
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            padding: 10px;
+            display: none;
+            min-width: 120px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .quality-menu.show {
+            display: block;
+        }
+
+        .quality-option {
+            padding: 10px 20px;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .quality-option:hover {
+            background: rgba(0, 198, 255, 0.5);
+        }
+
+        .quality-option.active {
+            background: var(--primary);
+            color: black;
+            font-weight: bold;
+        }
+
+        .floating-dots {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
         }
-        iframe {
-            width: 100%;
-            height: 100%;
+
+        .dot {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(0, 198, 255, 0.5);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        .live-btn {
+            background: #ff0000;
+            color: white;
             border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+        }
+
+        .live-btn:hover {
+            background: #ff3333;
+            transform: scale(1.05);
+        }
+
+        .live-btn.active {
+            animation: pulse 0.5s infinite alternate;
+        }
+
+        .pip-btn::after {
+            content: "◱";
+            font-size: 24px;
+        }
+
+        .fullscreen-btn::after {
+            content: "⤢";
+            font-size: 22px;
+        }
+
+        .ipl-score-container {
+            width: 90%;
+            max-width: 1100px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 198, 255, 0.3);
+        }
+
+        .ipl-score-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        #ipl-score {
+            font-size: 1.4rem;
+            color: white;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2rem; }
+            .viewer-count { font-size: 1.1rem; }
+            .control-btn { font-size: 1.4rem; width: 50px; height: 50px; padding: 10px; }
+            .live-btn { padding: 8px 15px; font-size: 1rem; }
+            .time-display { font-size: 1rem; }
+            .quality-btn { font-size: 1rem; padding: 8px 15px; }
+            .follow-btn { font-size: 1rem; padding: 8px 15px; }
+            .ipl-score-title { font-size: 1.4rem; }
+            #ipl-score { font-size: 1.2rem; }
         }
     </style>
-    <script>
-        // Prevent unwanted popups except Telegram
-        (function() {
-            let originalOpen = window.open;
-            window.open = function(url, name, specs) {
-                if (url.includes("https://instagram.com/cvang.19")) {
-                    return originalOpen.apply(window, arguments); // Allow Telegram popup
-                } else {
-                    console.warn("Blocked unwanted popup:", url);
-                    return null;
-                }
-            };
-        })();
-
-        // Show Telegram popup immediately on page load
-        window.onload = function() {
-            let userResponse = confirm("Follow Shivang on Instagram.");
-            if (userResponse) {
-                window.open("https://instagram.com/cvang.19", "_blank"); // Open Telegram in new tab
-            }
-        };
-    </script>
 </head>
 <body>
+    <div class="floating-dots" id="floating-dots"></div>
 
-    <!-- Fullscreen Video Embed -->
-    <iframe src="https://criccoder264.pages.dev/S182" allowfullscreen="" sandbox="allow-scripts allow-same-origin"></iframe>
+    <div class="top-container">
+        <h1 class="title">Built by Shivang</h1>
+        <div class="viewer-count" id="viewer-count">Loading viewers...</div>
+        <a href="https://instagram.com/cvang.19" target="_blank" class="follow-btn">Follow Me</a>
+    </div>
 
+    <div class="player-container">
+        <video id="video-player" autoplay muted playsinline></video> <!-- Added muted back -->
+        <div class="buffering-text" id="buffering-text">Buffering...</div>
+    </div>
 
+    <div class="progress-container" id="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
 
-</body></html>
+    <div class="controls-container">
+        <button id="play-pause" class="control-btn">⏸</button>
+        <button id="mute" class="control-btn">🔊</button>
+        <div class="time-display" id="time-display">00:00</div>
+        <button id="live-btn" class="live-btn">LIVE</button>
+        <button id="pip" class="control-btn pip-btn" title="Picture-in-Picture"></button>
+        <div class="quality-selector">
+            <button id="quality-btn" class="quality-btn">Quality</button>
+            <div class="quality-menu" id="quality-menu">
+                <div class="quality-option" data-quality="auto">Auto</div>
+                <div class="quality-option" data-quality="hd">HD</div>
+                <div class="quality-option" data-quality="sd">SD</div>
+                <div class="quality-option" data-quality="low">Low</div>
+            </div>
+        </div>
+        <button id="fullscreen" class="control-btn fullscreen-btn" title="Fullscreen"></button>
+    </div>
+
+    <div class="ipl-score-container">
+        <h2 class="ipl-score-title">Live IPL Score</h2>
+        <div id="ipl-score">Loading IPL scores...</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('video-player');
+            const playPauseBtn = document.getElementById('play-pause');
+            const fullscreenBtn = document.getElementById('fullscreen');
+            const muteBtn = document.getElementById('mute');
+            const pipBtn = document.getElementById('pip');
+            const bufferingText = document.getElementById('buffering-text');
+            const viewerCount = document.getElementById('viewer-count');
+            const progressBar = document.getElementById('progress-bar');
+            const progressContainer = document.getElementById('progress-container');
+            const timeDisplay = document.getElementById('time-display');
+            const qualityBtn = document.getElementById('quality-btn');
+            const qualityMenu = document.getElementById('quality-menu');
+            const qualityOptions = document.querySelectorAll('.quality-option');
+            const floatingDots = document.getElementById('floating-dots');
+            const liveBtn = document.getElementById('live-btn');
+            const iplScore = document.getElementById('ipl-score');
+
+            // Create floating dots
+            for (let i = 0; i < 50; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                dot.style.left = `${Math.random() * 100}%`;
+                dot.style.top = `${Math.random() * 100}%`;
+                dot.style.animationDuration = `${15 + Math.random() * 15}s`;
+                dot.style.animationDelay = `${Math.random() * 5}s`;
+                floatingDots.appendChild(dot);
+            }
+
+            const primaryStream = "https://smart.bengaldigital.live/T-Sports_HD/tracks-v1a1/mono.m3u8";
+            const fallbackStream = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
+            let hls;
+            let isLive = true;
+
+            function initPlayer(streamUrl) {
+                console.log('Initializing player with URL:', streamUrl);
+                bufferingText.style.display = 'block'; // Show buffering initially
+                
+                if (Hls.isSupported()) {
+                    hls = new Hls({
+                        debug: true,
+                        maxBufferLength: 5,
+                        maxMaxBufferLength: 15,
+                        maxBufferSize: 10 * 1000 * 1000,
+                        maxBufferHole: 0.05,
+                        lowLatencyMode: true,
+                        liveSyncDurationCount: 1,
+                        liveMaxLatencyDurationCount: 2,
+                        abrEwmaFastLive: 1.0,
+                        abrEwmaSlowLive: 3.0,
+                        abrBandWidthFactor: 0.7,
+                        abrBandWidthUpFactor: 0.6,
+                        startLevel: 0,
+                        autoStartLoad: true,
+                        initialLiveManifestSize: 1,
+                    });
+                    
+                    hls.loadSource(streamUrl);
+                    hls.attachMedia(video);
+                    
+                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                        console.log('Manifest parsed, attempting to play');
+                        video.play().catch(e => {
+                            console.error('Autoplay failed:', e);
+                            bufferingText.textContent = 'Click to play';
+                            bufferingText.style.display = 'block';
+                        });
+                    });
+                    
+                    hls.on(Hls.Events.ERROR, function(event, data) {
+                        console.error('HLS Error:', data);
+                        bufferingText.style.display = 'block';
+                        if (data.fatal) {
+                            switch(data.type) {
+                                case Hls.ErrorTypes.NETWORK_ERROR:
+                                    console.log('Network error, attempting to recover...');
+                                    bufferingText.textContent = 'Network Error, retrying...';
+                                    hls.startLoad();
+                                    setTimeout(() => {
+                                        if (!video.currentTime) {
+                                            console.log('Primary stream failed, switching to fallback');
+                                            hls.destroy();
+                                            initPlayer(fallbackStream);
+                                        }
+                                    }, 5000);
+                                    break;
+                                case Hls.ErrorTypes.MEDIA_ERROR:
+                                    console.log('Media error, attempting recovery...');
+                                    bufferingText.textContent = 'Media Error, recovering...';
+                                    hls.recoverMediaError();
+                                    break;
+                                default:
+                                    console.log('Unrecoverable error, reinitializing...');
+                                    bufferingText.textContent = 'Error, restarting...';
+                                    hls.destroy();
+                                    initPlayer(streamUrl);
+                                    break;
+                            }
+                        }
+                    });
+
+                    hls.on(Hls.Events.BUFFER_APPENDING, () => {
+                        console.log('Buffering data...');
+                        bufferingText.style.display = 'block';
+                    });
+
+                    hls.on(Hls.Events.BUFFER_APPENDED, () => {
+                        console.log('Buffer appended');
+                    });
+                    
+                    setInterval(checkLiveStatus, 3000);
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    console.log('Native HLS support detected');
+                    video.src = streamUrl;
+                    video.addEventListener('loadedmetadata', function() {
+                        video.play().catch(e => console.error('Native playback failed:', e));
+                    });
+                } else {
+                    console.error('HLS not supported by browser');
+                    bufferingText.textContent = 'Browser does not support HLS';
+                    bufferingText.style.display = 'block';
+                }
+            }
+
+            initPlayer(primaryStream);
+
+            function checkLiveStatus() {
+                if (!video.seekable.length) return;
+                
+                const liveEdge = video.seekable.end(0);
+                const currentTime = video.currentTime;
+                const timeDiff = liveEdge - currentTime;
+                
+                if (timeDiff > 5) {
+                    liveBtn.style.display = 'block';
+                    isLive = false;
+                } else {
+                    liveBtn.style.display = 'none';
+                    isLive = true;
+                }
+            }
+
+            playPauseBtn.addEventListener('click', togglePlayPause);
+            video.addEventListener('click', togglePlayPause);
+            
+            function togglePlayPause() {
+                if (video.paused) {
+                    video.play().then(() => {
+                        playPauseBtn.textContent = '⏸';
+                        bufferingText.style.display = 'none';
+                    }).catch(e => console.error('Play failed:', e));
+                } else {
+                    video.pause();
+                    playPauseBtn.textContent = '▶';
+                }
+            }
+
+            video.addEventListener('waiting', () => {
+                console.log('Video waiting event');
+                bufferingText.style.display = 'block';
+            });
+
+            video.addEventListener('playing', () => {
+                console.log('Video playing event');
+                bufferingText.style.display = 'none';
+            });
+
+            video.addEventListener('canplay', () => {
+                console.log('Video can play');
+                bufferingText.style.display = 'none';
+                video.play().catch(e => console.error('Autoplay after canplay failed:', e));
+            });
+
+            video.addEventListener('stalled', () => {
+                console.log('Video stalled');
+                bufferingText.textContent = 'Stalled, retrying...';
+                bufferingText.style.display = 'block';
+            });
+
+            fullscreenBtn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    video.requestFullscreen().catch(err => {
+                        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+                    });
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+
+            document.addEventListener('fullscreenchange', () => {
+                if (document.fullscreenElement) {
+                    video.setAttribute('controls', '');
+                } else {
+                    video.removeAttribute('controls');
+                }
+            });
+
+            pipBtn.addEventListener('click', async () => {
+                try {
+                    if (video !== document.pictureInPictureElement) {
+                        await video.requestPictureInPicture();
+                        pipBtn.classList.add('active');
+                    } else {
+                        await document.exitPictureInPicture();
+                        pipBtn.classList.remove('active');
+                    }
+                } catch (error) {
+                    console.error('Picture-in-Picture error:', error);
+                }
+            });
+
+            muteBtn.addEventListener('click', () => {
+                video.muted = !video.muted;
+                muteBtn.textContent = video.muted ? '🔇' : '🔊';
+                muteBtn.classList.toggle('active', video.muted);
+            });
+
+            video.addEventListener('timeupdate', updateProgressBar);
+            
+            function updateProgressBar() {
+                if (video.duration) {
+                    const percent = (video.currentTime / video.duration) * 100;
+                    progressBar.style.width = `${percent}%`;
+                    
+                    const minutes = Math.floor(video.currentTime / 60);
+                    const seconds = Math.floor(video.currentTime % 60);
+                    timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }
+            
+            progressContainer.addEventListener('click', (e) => {
+                if (video.duration) {
+                    const pos = (e.pageX - progressContainer.offsetLeft) / progressContainer.offsetWidth;
+                    video.currentTime = pos * video.duration;
+                }
+            });
+
+            liveBtn.addEventListener('click', () => {
+                if (video.seekable.length > 0) {
+                    video.currentTime = video.seekable.end(0);
+                    liveBtn.classList.add('active');
+                    setTimeout(() => liveBtn.classList.remove('active'), 1000);
+                }
+            });
+
+            qualityBtn.addEventListener('click', () => {
+                qualityMenu.classList.toggle('show');
+            });
+
+            qualityOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    qualityOptions.forEach(opt => opt.classList.remove('active'));
+                    option.classList.add('active');
+                    qualityBtn.textContent = option.textContent;
+                    qualityMenu.classList.remove('show');
+                    if (hls) {
+                        const qualityMap = { 'Auto': -1, 'HD': 2, 'SD': 1, 'Low': 0 };
+                        hls.currentLevel = qualityMap[option.textContent] || -1;
+                    }
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!qualityBtn.contains(e.target) && !qualityMenu.contains(e.target)) {
+                    qualityMenu.classList.remove('show');
+                }
+            });
+
+            function updateViewerCount() {
+                const baseCount = 1500;
+                const randomFactor = Math.floor(Math.random() * 1000);
+                const viewers = baseCount + randomFactor;
+                viewerCount.textContent = `${viewers.toLocaleString()} watching now`;
+            }
+            
+            updateViewerCount();
+            setInterval(updateViewerCount, 5000);
+
+            async function updateIPLScore() {
+                try {
+                    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+                    const targetUrl = 'https://www.espncricinfo.com/live-cricket-score';
+                    const response = await fetch(proxyUrl + targetUrl);
+                    const html = await response.text();
+                    
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    const liveMatch = doc.querySelector('.ds-text-title-xs.ds-font-bold');
+                    if (liveMatch) {
+                        const teams = liveMatch.textContent.trim();
+                        const scoreElement = doc.querySelector('.ds-text-compact-m');
+                        const score = scoreElement ? scoreElement.textContent.trim() : 'Score not available';
+                        iplScore.textContent = `${teams} - ${score}`;
+                    } else {
+                        iplScore.textContent = 'No live IPL match as of now';
+                    }
+                } catch (error) {
+                    console.error('Error fetching IPL score:', error);
+                    iplScore.textContent = 'No live IPL match as of now';
+                }
+            }
+
+            updateIPLScore();
+            setInterval(updateIPLScore, 30000);
+
+            document.addEventListener('keydown', (e) => {
+                switch(e.code) {
+                    case 'Space':
+                        e.preventDefault();
+                        togglePlayPause();
+                        break;
+                    case 'KeyM':
+                        video.muted = !video.muted;
+                        muteBtn.textContent = video.muted ? '🔇' : '🔊';
+                        muteBtn.classList.toggle('active', video.muted);
+                        break;
+                    case 'KeyF':
+                        if (!document.fullscreenElement) {
+                            video.requestFullscreen();
+                        } else {
+                            document.exitFullscreen();
+                        }
+                        break;
+                    case 'KeyP':
+                    case 'KeyI':
+                        pipBtn.click();
+                        break;
+                    case 'KeyL':
+                        if (liveBtn.style.display !== 'none') {
+                            liveBtn.click();
+                        }
+                        break;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

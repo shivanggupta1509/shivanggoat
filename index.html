@@ -72,23 +72,52 @@
             border-radius: 3px;
         }
 
-        .viewer-count {
+        .stream-status {
             font-size: 1.4rem;
             font-weight: bold;
-            color: var(--primary);
+            color: var(--light);
             display: flex;
             align-items: center;
             margin-bottom: 20px;
             padding: 8px 15px;
-            background: rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, rgba(0, 198, 255, 0.2), rgba(255, 0, 255, 0.2));
             border-radius: 20px;
-            border: 1px solid rgba(0, 198, 255, 0.3);
+            border: 1px solid rgba(0, 198, 255, 0.5);
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+            animation: glow 2s infinite alternate;
+            gap: 10px; /* Space between status and time */
         }
 
-        .viewer-count::before {
-            content: "🔴";
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #ff0000;
+            border-radius: 50%;
             margin-right: 8px;
-            animation: pulse 1.5s infinite;
+            animation: pulseDot 1s infinite;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+        }
+
+        .separator-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin: 0 8px;
+            animation: pulseDot 1.5s infinite;
+            box-shadow: 0 0 10px rgba(0, 198, 255, 0.8);
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 10px rgba(0, 198, 255, 0.5); }
+            100% { box-shadow: 0 0 20px rgba(255, 0, 255, 0.7); }
+        }
+
+        @keyframes pulseDot {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .follow-btn {
@@ -380,7 +409,7 @@
 
         @media (max-width: 768px) {
             .title { font-size: 2rem; }
-            .viewer-count { font-size: 1.1rem; }
+            .stream-status { font-size: 1rem; padding: 6px 12px; }
             .control-btn { font-size: 1.4rem; width: 50px; height: 50px; padding: 10px; }
             .live-btn { padding: 8px 15px; font-size: 1rem; }
             .time-display { font-size: 1rem; }
@@ -396,7 +425,9 @@
 
     <div class="top-container">
         <h1 class="title">Built by Shivang</h1>
-        <div class="viewer-count" id="viewer-count">Loading viewers...</div>
+        <div class="stream-status" id="stream-status">
+            <span class="status-dot"></span>LIVE<span class="separator-dot"></span><span id="current-time">Loading...</span>
+        </div>
         <a href="https://instagram.com/cvang.19" target="_blank" class="follow-btn">Follow Me</a>
     </div>
 
@@ -441,7 +472,9 @@
             const muteBtn = document.getElementById('mute');
             const pipBtn = document.getElementById('pip');
             const bufferingText = document.getElementById('buffering-text');
-            const viewerCount = document.getElementById('viewer-count');
+            const streamStatus = document.getElementById('stream-status');
+            const statusDot = streamStatus.querySelector('.status-dot');
+            const currentTimeDisplay = document.getElementById('current-time');
             const progressBar = document.getElementById('progress-bar');
             const progressContainer = document.getElementById('progress-container');
             const timeDisplay = document.getElementById('time-display');
@@ -478,20 +511,20 @@
                 if (Hls.isSupported()) {
                     hls = new Hls({
                         debug: true,
-                        maxBufferLength: 10, // Increased buffer length for smoother playback
-                        maxMaxBufferLength: 20, // Max buffer to allow a small delay
-                        maxBufferSize: 15 * 1000 * 1000, // Larger buffer size
-                        maxBufferHole: 0.1, // Slightly larger hole tolerance
-                        lowLatencyMode: false, // Disable low latency to allow controlled delay
-                        liveSyncDurationCount: 3, // Sync 3 segments behind live edge (~5-6s delay)
-                        liveMaxLatencyDurationCount: 6, // Allow up to 6 segments latency
-                        abrEwmaFastLive: 1.5, // Adjusted for smoother ABR
-                        abrEwmaSlowLive: 4.0, // Slower adaptation for stability
-                        abrBandWidthFactor: 0.8, // Slightly more conservative bandwidth estimation
-                        abrBandWidthUpFactor: 0.7, // Slower up-switching
-                        startLevel: 0, // Start at lowest quality for quick buffering
+                        maxBufferLength: 10,
+                        maxMaxBufferLength: 20,
+                        maxBufferSize: 15 * 1000 * 1000,
+                        maxBufferHole: 0.1,
+                        lowLatencyMode: false,
+                        liveSyncDurationCount: 3,
+                        liveMaxLatencyDurationCount: 6,
+                        abrEwmaFastLive: 1.5,
+                        abrEwmaSlowLive: 4.0,
+                        abrBandWidthFactor: 0.8,
+                        abrBandWidthUpFactor: 0.7,
+                        startLevel: 0,
                         autoStartLoad: true,
-                        initialLiveManifestSize: 2, // Larger initial manifest for stability
+                        initialLiveManifestSize: 2,
                     });
                     
                     hls.loadSource(streamUrl);
@@ -500,6 +533,7 @@
                     hls.on(Hls.Events.MANIFEST_PARSED, function() {
                         console.log('Manifest parsed, attempting to play');
                         video.play().catch(e => console.error('Autoplay failed:', e));
+                        updateStreamStatus(true);
                     });
                     
                     hls.on(Hls.Events.ERROR, function(event, data) {
@@ -507,6 +541,7 @@
                         isBuffering = true;
                         bufferingText.style.display = 'block';
                         if (data.fatal) {
+                            updateStreamStatus(false);
                             switch(data.type) {
                                 case Hls.ErrorTypes.NETWORK_ERROR:
                                     console.log('Network error, attempting to recover...');
@@ -549,12 +584,15 @@
                     video.src = streamUrl;
                     video.addEventListener('loadedmetadata', function() {
                         video.play().catch(e => console.error('Native playback failed:', e));
+                        updateStreamStatus(true);
                     });
+                    video.addEventListener('error', () => updateStreamStatus(false));
                 } else {
                     console.error('HLS not supported by browser');
                     bufferingText.textContent = 'Browser does not support HLS';
                     bufferingText.style.display = 'block';
                     isBuffering = true;
+                    updateStreamStatus(false);
                 }
             }
 
@@ -562,13 +600,10 @@
 
             function checkLiveStatus() {
                 if (!video.seekable.length) return;
-                
                 const liveEdge = video.seekable.end(0);
                 const currentTime = video.currentTime;
                 const timeDiff = liveEdge - currentTime;
-                
-                // Adjusted threshold to account for ~5-6s delay
-                if (timeDiff > 10) { // Show LIVE button only if significantly behind
+                if (timeDiff > 10) {
                     liveBtn.style.display = 'block';
                     isLive = false;
                 } else {
@@ -576,6 +611,28 @@
                     isLive = true;
                 }
             }
+
+            // Update stream status and time
+            function updateStreamStatus(isLive) {
+                if (isLive) {
+                    streamStatus.innerHTML = '<span class="status-dot"></span>LIVE<span class="separator-dot"></span><span id="current-time"></span>';
+                    statusDot.style.background = '#ff0000'; // Red for live
+                } else {
+                    streamStatus.innerHTML = '<span class="status-dot"></span>OFFLINE<span class="separator-dot"></span><span id="current-time"></span>';
+                    statusDot.style.background = '#666'; // Gray for offline
+                }
+                updateCurrentTime(); // Ensure time updates immediately
+            }
+
+            // Update current IST time
+            function updateCurrentTime() {
+                const istOptions = { timeZone: 'Asia/Kolkata', hour12: false };
+                const now = new Date().toLocaleString('en-IN', istOptions);
+                const [date, time] = now.split(', ');
+                document.getElementById('current-time').textContent = `${date} ${time}`;
+            }
+            setInterval(updateCurrentTime, 1000); // Update every second
+            updateCurrentTime(); // Initial call
 
             playPauseBtn.addEventListener('click', togglePlayPause);
             video.addEventListener('click', togglePlayPause);
@@ -587,10 +644,12 @@
                         playPauseBtn.textContent = '⏸';
                         isBuffering = false;
                         bufferingText.style.display = 'none';
+                        updateStreamStatus(true);
                     }).catch(e => {
                         console.error('Play failed:', e);
                         bufferingText.textContent = 'Error playing, retrying...';
                         bufferingText.style.display = 'block';
+                        updateStreamStatus(false);
                     });
                 } else {
                     video.pause();
@@ -613,6 +672,7 @@
                 console.log('Video playing event');
                 isBuffering = false;
                 bufferingText.style.display = 'none';
+                updateStreamStatus(true);
             });
 
             video.addEventListener('canplay', () => {
@@ -621,6 +681,7 @@
                     isBuffering = false;
                     bufferingText.style.display = 'none';
                     video.play().catch(e => console.error('Autoplay after canplay failed:', e));
+                    updateStreamStatus(true);
                 }
             });
 
@@ -691,7 +752,6 @@
                 if (video.duration) {
                     const percent = (video.currentTime / video.duration) * 100;
                     progressBar.style.width = `${percent}%`;
-                    
                     const minutes = Math.floor(video.currentTime / 60);
                     const seconds = Math.floor(video.currentTime % 60);
                     timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
@@ -736,26 +796,14 @@
                 }
             });
 
-            function updateViewerCount() {
-                const baseCount = 1500;
-                const randomFactor = Math.floor(Math.random() * 1000);
-                const viewers = baseCount + randomFactor;
-                viewerCount.textContent = `${viewers.toLocaleString()} watching now`;
-            }
-            
-            updateViewerCount();
-            setInterval(updateViewerCount, 5000);
-
             async function updateIPLScore() {
                 try {
                     const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
                     const targetUrl = 'https://www.espncricinfo.com/live-cricket-score';
                     const response = await fetch(proxyUrl + targetUrl);
                     const html = await response.text();
-                    
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
-                    
                     const liveMatch = doc.querySelector('.ds-text-title-xs.ds-font-bold');
                     if (liveMatch) {
                         const teams = liveMatch.textContent.trim();

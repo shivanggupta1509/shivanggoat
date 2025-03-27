@@ -41,7 +41,7 @@
 
         .title {
             font-family: 'Russo One', sans-serif;
-            font-size: 4rem; /* Increased from 3.2rem */
+            font-size: 4rem;
             font-weight: 700;
             text-transform: uppercase;
             background: linear-gradient(90deg, #00ffff, #9933ff, #0066ff);
@@ -73,13 +73,13 @@
         }
 
         .viewer-count {
-            font-size: 1.8rem; /* Increased from 1.4rem */
+            font-size: 1.8rem;
             font-weight: bold;
             color: var(--primary);
             display: flex;
             align-items: center;
             margin-bottom: 20px;
-            padding: 10px 20px; /* Slightly increased padding */
+            padding: 10px 20px;
             background: rgba(0, 0, 0, 0.5);
             border-radius: 20px;
             border: 1px solid rgba(0, 198, 255, 0.3);
@@ -95,9 +95,9 @@
             background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
             color: white;
             border: none;
-            padding: 15px 30px; /* Increased from 10px 20px */
+            padding: 15px 30px;
             border-radius: 25px;
-            font-size: 1.6rem; /* Increased from 1.2rem */
+            font-size: 1.6rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
@@ -141,12 +141,12 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 2rem; /* Increased from 1.5rem */
+            font-size: 2rem;
             font-weight: bold;
             color: var(--primary);
             display: none;
             background: rgba(0, 0, 0, 0.7);
-            padding: 15px 25px; /* Increased from 10px 20px */
+            padding: 15px 25px;
             border-radius: 10px;
             z-index: 10;
         }
@@ -166,16 +166,16 @@
             background: rgba(255, 255, 255, 0.1);
             border: none;
             color: white;
-            font-size: 2.2rem; /* Increased from 1.8rem */
+            font-size: 2.2rem;
             cursor: pointer;
-            padding: 20px; /* Increased from 15px */
+            padding: 20px;
             border-radius: 50%;
             transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 80px; /* Increased from 60px */
-            height: 80px; /* Increased from 60px */
+            width: 80px;
+            height: 80px;
             box-shadow: 0 0 15px rgba(0, 198, 255, 0.2);
         }
 
@@ -227,7 +227,7 @@
         }
 
         .time-display {
-            font-size: 1.6rem; /* Increased from 1.2rem */
+            font-size: 1.6rem;
             color: white;
             margin: 0 15px;
             display: flex;
@@ -244,9 +244,9 @@
             background: rgba(255, 255, 255, 0.1);
             border: none;
             color: white;
-            font-size: 1.6rem; /* Increased from 1.2rem */
+            font-size: 1.6rem;
             cursor: pointer;
-            padding: 15px 25px; /* Increased from 10px 20px */
+            padding: 15px 25px;
             border-radius: 25px;
             transition: all 0.3s;
         }
@@ -257,14 +257,14 @@
 
         .quality-menu {
             position: absolute;
-            top: -180px; /* Adjusted for larger options */
+            top: -180px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.8);
             border-radius: 10px;
             padding: 10px;
             display: none;
-            min-width: 150px; /* Increased from 120px */
+            min-width: 150px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
@@ -273,12 +273,12 @@
         }
 
         .quality-option {
-            padding: 12px 25px; /* Increased from 10px 20px */
+            padding: 12px 25px;
             color: white;
             cursor: pointer;
             border-radius: 5px;
             transition: background 0.3s;
-            font-size: 1.4rem; /* Increased from default */
+            font-size: 1.4rem;
         }
 
         .quality-option:hover {
@@ -315,9 +315,9 @@
             background: #ff0000;
             color: white;
             border: none;
-            padding: 15px 30px; /* Increased from 10px 20px */
+            padding: 15px 30px;
             border-radius: 25px;
-            font-size: 1.6rem; /* Increased from 1.2rem */
+            font-size: 1.6rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
@@ -335,12 +335,12 @@
 
         .pip-btn::after {
             content: "◱";
-            font-size: 28px; /* Increased from 24px */
+            font-size: 28px;
         }
 
         .fullscreen-btn::after {
             content: "⤢";
-            font-size: 26px; /* Increased from 22px */
+            font-size: 26px;
         }
 
         .ipl-score-container {
@@ -356,27 +356,84 @@
 
         .ipl-score-title {
             font-family: 'Orbitron', sans-serif;
-            font-size: 2.2rem; /* Increased from 1.8rem */
+            font-size: 2.2rem;
             color: var(--primary);
             margin-bottom: 15px;
         }
 
-        #ipl-score {
-            font-size: 1.8rem; /* Increased from 1.4rem */
-            color: white;
+        .score-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
             margin-bottom: 15px;
+        }
+
+        .team {
+            text-align: center;
+            width: 45%;
+        }
+
+        .team h2 {
+            font-size: 1.8rem;
+            margin: 0;
+            color: #ffcc00;
+        }
+
+        .score {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .vs {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .details-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .details-card p {
+            margin: 5px 0;
+            font-size: 1.4rem;
+        }
+
+        .commentary-feed {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .commentary-item {
+            font-size: 1.2rem;
+            margin: 5px 0;
+            padding: 5px;
+            background: rgba(0, 198, 255, 0.1);
+            border-radius: 5px;
         }
 
         .refresh-score-btn {
             background: linear-gradient(45deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            padding: 12px 20px; /* Increased from 8px 15px */
+            padding: 12px 20px;
             border-radius: 20px;
-            font-size: 1.4rem; /* Increased from 1rem */
+            font-size: 1.4rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
+            margin-top: 15px;
         }
 
         .refresh-score-btn:hover {
@@ -398,33 +455,22 @@
         }
 
         @media (max-width: 768px) {
-            .title { font-size: 2.5rem; } /* Increased from 2rem */
-            .viewer-count { font-size: 1.3rem; } /* Increased from 1.1rem */
-            .control-btn { 
-                font-size: 1.8rem; /* Increased from 1.4rem */
-                width: 60px; /* Increased from 50px */
-                height: 60px; /* Increased from 50px */
-                padding: 15px; /* Increased from 10px */
-            }
-            .live-btn { 
-                padding: 10px 20px; /* Increased from 8px 15px */
-                font-size: 1.2rem; /* Increased from 1rem */
-            }
-            .time-display { font-size: 1.2rem; } /* Increased from 1rem */
-            .quality-btn { 
-                font-size: 1.2rem; /* Increased from 1rem */
-                padding: 10px 20px; /* Increased from 8px 15px */
-            }
-            .follow-btn { 
-                font-size: 1.2rem; /* Increased from 1rem */
-                padding: 10px 20px; /* Increased from 8px 15px */
-            }
-            .ipl-score-title { font-size: 1.8rem; } /* Increased from 1.4rem */
-            #ipl-score { font-size: 1.4rem; } /* Increased from 1.2rem */
-            .refresh-score-btn { 
-                font-size: 1.1rem; /* Increased from 0.9rem */
-                padding: 8px 15px; /* Increased from 6px 12px */
-            }
+            .title { font-size: 2.5rem; }
+            .viewer-count { font-size: 1.3rem; }
+            .control-btn { font-size: 1.8rem; width: 60px; height: 60px; padding: 15px; }
+            .live-btn { padding: 10px 20px; font-size: 1.2rem; }
+            .time-display { font-size: 1.2rem; }
+            .quality-btn { font-size: 1.2rem; padding: 10px 20px; }
+            .follow-btn { font-size: 1.2rem; padding: 10px 20px; }
+            .ipl-score-title { font-size: 1.8rem; }
+            .score-card { flex-direction: column; }
+            .team { width: 100%; margin: 10px 0; }
+            .team h2 { font-size: 1.4rem; }
+            .score { font-size: 1.6rem; }
+            .vs { font-size: 1.6rem; }
+            .details-card p { font-size: 1.1rem; }
+            .commentary-item { font-size: 1rem; }
+            .refresh-score-btn { font-size: 1.1rem; padding: 8px 15px; }
         }
     </style>
 </head>
@@ -465,8 +511,28 @@
     </div>
 
     <div class="ipl-score-container">
-        <h2 class="ipl-score-title">Live IPL Score</h2>
-        <div id="ipl-score">Loading IPL scores...</div>
+        <h2 class="ipl-score-title" id="ipl-match-title">Loading...</h2>
+        <div class="score-card">
+            <div class="team">
+                <h2 id="team1-name">Team 1</h2>
+                <div class="score" id="team1-score">Loading...</div>
+            </div>
+            <div class="vs">vs</div>
+            <div class="team">
+                <h2 id="team2-name">Team 2</h2>
+                <div class="score" id="team2-score">Loading...</div>
+            </div>
+        </div>
+        <div class="details-card">
+            <p><strong>Status:</strong> <span id="match-status">Loading...</span></p>
+            <p><strong>Date:</strong> <span id="match-date">Loading...</span></p>
+            <p><strong>Time:</strong> <span id="match-time">Loading...</span></p>
+            <p><strong>Venue:</strong> <span id="match-venue">Loading...</span></p>
+            <p><strong>Toss:</strong> <span id="match-toss">Loading...</span></p>
+        </div>
+        <div class="commentary-feed">
+            <div id="commentary">Loading commentary...</div>
+        </div>
         <button id="refresh-score-btn" class="refresh-score-btn">Refresh Score</button>
     </div>
 
@@ -488,10 +554,9 @@
             const qualityOptions = document.querySelectorAll('.quality-option');
             const floatingDots = document.getElementById('floating-dots');
             const liveBtn = document.getElementById('live-btn');
-            const iplScore = document.getElementById('ipl-score');
             const refreshScoreBtn = document.getElementById('refresh-score-btn');
 
-            // Create floating dots
+            // Floating dots
             for (let i = 0; i < 50; i++) {
                 const dot = document.createElement('div');
                 dot.classList.add('dot');
@@ -793,34 +858,111 @@
             updateDateTimeStatus();
             setInterval(updateDateTimeStatus, 1000);
 
+            // IPL Score Fetching
             async function updateIPLScore() {
+                const matchTitle = document.getElementById('ipl-match-title');
+                const team1Name = document.getElementById('team1-name');
+                const team2Name = document.getElementById('team2-name');
+                const team1Score = document.getElementById('team1-score');
+                const team2Score = document.getElementById('team2-score');
+                const matchStatus = document.getElementById('match-status');
+                const matchDate = document.getElementById('match-date');
+                const matchTime = document.getElementById('match-time');
+                const matchVenue = document.getElementById('match-venue');
+                const matchToss = document.getElementById('match-toss');
+                const commentary = document.getElementById('commentary');
+
                 try {
                     const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-                    const targetUrl = 'https://www.espncricinfo.com/live-cricket-score';
+                    const targetUrl = 'https://www.espncricinfo.com/series/ipl-2025-1449924/sunrisers-hyderabad-vs-lucknow-super-giants-7th-match-1473444/live-cricket-score';
                     const response = await fetch(proxyUrl + targetUrl);
                     const html = await response.text();
-                    
+
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
-                    
-                    const liveMatch = doc.querySelector('.ds-text-title-xs.ds-font-bold');
-                    if (liveMatch) {
-                        const teams = liveMatch.textContent.trim();
-                        const scoreElement = doc.querySelector('.ds-text-compact-m');
-                        const score = scoreElement ? scoreElement.textContent.trim() : 'Score not available';
-                        iplScore.textContent = `${teams} - ${score}`;
+
+                    // Match Title
+                    const title = doc.querySelector('.ds-text-title-l.ds-my-2');
+                    matchTitle.textContent = title ? title.textContent.trim() : 'SRH vs LSG - IPL 2025';
+
+                    // Team Names
+                    const teamNames = doc.querySelectorAll('.ds-text-tight-l.ds-font-bold');
+                    if (teamNames.length >= 2) {
+                        team1Name.textContent = teamNames[0].textContent.trim();
+                        team2Name.textContent = teamNames[1].textContent.trim();
                     } else {
-                        iplScore.textContent = 'No live IPL match as of now';
+                        team1Name.textContent = 'Sunrisers Hyderabad';
+                        team2Name.textContent = 'Lucknow Super Giants';
+                    }
+
+                    // Live Scores
+                    const scoreBlocks = doc.querySelectorAll('.ds-text-compact-m.ds-text-typo.ds-text-right');
+                    if (scoreBlocks.length >= 2) {
+                        team1Score.textContent = scoreBlocks[0].textContent.trim();
+                        team2Score.textContent = scoreBlocks[1].textContent.trim();
+                    } else {
+                        team1Score.textContent = 'Yet to bat';
+                        team2Score.textContent = 'Yet to bat';
+                    }
+
+                    // Match Status
+                    const status = doc.querySelector('.ds-text-tight-m.ds-font-regular.ds-text-typo-mid3') || 
+                                  doc.querySelector('.ds-text-tight-m.ds-font-regular');
+                    matchStatus.textContent = status ? status.textContent.trim() : 'Match yet to start';
+
+                    // Match Details
+                    const details = doc.querySelectorAll('.ds-text-tight-s.ds-font-regular.ds-text-ui-typo-mid');
+                    if (details.length > 0) {
+                        const dateTimeVenue = details[0].textContent.trim().split(', ');
+                        matchDate.textContent = dateTimeVenue[1] || 'March 27, 2025';
+                        matchTime.textContent = dateTimeVenue[2] || '7:30 PM IST';
+                        matchVenue.textContent = dateTimeVenue[0] || 'Rajiv Gandhi International Stadium, Hyderabad';
+                    } else {
+                        matchDate.textContent = 'March 27, 2025';
+                        matchTime.textContent = '7:30 PM IST';
+                        matchVenue.textContent = 'Rajiv Gandhi International Stadium, Hyderabad';
+                    }
+
+                    // Toss Info
+                    const toss = doc.querySelector('.ds-text-tight-s.ds-font-regular.ds-mb-1.ds-text-typo-mid');
+                    matchToss.textContent = toss ? toss.textContent.trim() : 'Toss yet to be decided';
+
+                    // Commentary Feed
+                    const commentaryItems = doc.querySelectorAll('.ds-text-tight-s.ds-font-regular.ds-mb-2');
+                    if (commentaryItems.length > 0) {
+                        commentary.innerHTML = '';
+                        commentaryItems.forEach(item => {
+                            const div = document.createElement('div');
+                            div.className = 'commentary-item';
+                            div.textContent = item.textContent.trim();
+                            commentary.appendChild(div);
+                        });
+                    } else {
+                        commentary.textContent = 'No commentary available yet';
                     }
                 } catch (error) {
                     console.error('Error fetching IPL score:', error);
-                    iplScore.textContent = 'No live IPL match as of now';
+                    matchTitle.textContent = 'SRH vs LSG - IPL 2025';
+                    team1Name.textContent = 'Sunrisers Hyderabad';
+                    team2Name.textContent = 'Lucknow Super Giants';
+                    team1Score.textContent = 'N/A';
+                    team2Score.textContent = 'N/A';
+                    matchStatus.textContent = 'Failed to fetch status';
+                    matchDate.textContent = 'March 27, 2025';
+                    matchTime.textContent = '7:30 PM IST';
+                    matchVenue.textContent = 'Rajiv Gandhi International Stadium, Hyderabad';
+                    matchToss.textContent = 'N/A';
+                    commentary.textContent = 'Failed to load commentary';
                 }
             }
 
+            // Initial score update
             updateIPLScore();
-            setInterval(updateIPLScore, 5000);
 
+            // Auto-refresh every 5 seconds
+            const scoreInterval = setInterval(updateIPLScore, 5000);
+
+            // Manual refresh button
             refreshScoreBtn.addEventListener('click', () => {
                 updateIPLScore();
             });

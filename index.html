@@ -478,20 +478,20 @@
                 if (Hls.isSupported()) {
                     hls = new Hls({
                         debug: true,
-                        maxBufferLength: 5,
-                        maxMaxBufferLength: 15,
-                        maxBufferSize: 10 * 1000 * 1000,
-                        maxBufferHole: 0.05,
-                        lowLatencyMode: true,
-                        liveSyncDurationCount: 1,
-                        liveMaxLatencyDurationCount: 2,
-                        abrEwmaFastLive: 1.0,
-                        abrEwmaSlowLive: 3.0,
-                        abrBandWidthFactor: 0.7,
-                        abrBandWidthUpFactor: 0.6,
-                        startLevel: 0,
+                        maxBufferLength: 10, // Increased buffer length for smoother playback
+                        maxMaxBufferLength: 20, // Max buffer to allow a small delay
+                        maxBufferSize: 15 * 1000 * 1000, // Larger buffer size
+                        maxBufferHole: 0.1, // Slightly larger hole tolerance
+                        lowLatencyMode: false, // Disable low latency to allow controlled delay
+                        liveSyncDurationCount: 3, // Sync 3 segments behind live edge (~5-6s delay)
+                        liveMaxLatencyDurationCount: 6, // Allow up to 6 segments latency
+                        abrEwmaFastLive: 1.5, // Adjusted for smoother ABR
+                        abrEwmaSlowLive: 4.0, // Slower adaptation for stability
+                        abrBandWidthFactor: 0.8, // Slightly more conservative bandwidth estimation
+                        abrBandWidthUpFactor: 0.7, // Slower up-switching
+                        startLevel: 0, // Start at lowest quality for quick buffering
                         autoStartLoad: true,
-                        initialLiveManifestSize: 1,
+                        initialLiveManifestSize: 2, // Larger initial manifest for stability
                     });
                     
                     hls.loadSource(streamUrl);
@@ -567,7 +567,8 @@
                 const currentTime = video.currentTime;
                 const timeDiff = liveEdge - currentTime;
                 
-                if (timeDiff > 5) {
+                // Adjusted threshold to account for ~5-6s delay
+                if (timeDiff > 10) { // Show LIVE button only if significantly behind
                     liveBtn.style.display = 'block';
                     isLive = false;
                 } else {

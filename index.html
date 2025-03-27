@@ -1,0 +1,50 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shivang Papa</title>
+    <style>
+        /* Fullscreen iframe */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+    <script>
+        // Prevent unwanted popups except Telegram
+        (function() {
+            let originalOpen = window.open;
+            window.open = function(url, name, specs) {
+                if (url.includes("https://t.me/")) {
+                    return originalOpen.apply(window, arguments); // Allow Telegram popup
+                } else {
+                    console.warn("Blocked unwanted popup:", url);
+                    return null;
+                }
+            };
+        })();
+
+        // Show Telegram popup immediately on page load
+        window.onload = function() {
+            let userResponse = confirm("Shivang Papa hai");
+            if (userResponse) {
+                window.open("https://t.me/", "_blank"); // Open Telegram in new tab
+            }
+        };
+    </script>
+</head>
+<body>
+
+    <!-- Fullscreen Video Embed -->
+    <iframe src="https://criccoder264.pages.dev/S182" allowfullscreen="" sandbox="allow-scripts allow-same-origin"></iframe>
+
+
+
+</body></html>

@@ -1,7 +1,7 @@
 <html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shivang Papa</title>
+    <title>Built By Shivang</title>
     <style>
         /* Fullscreen iframe */
         html, body {
@@ -22,7 +22,7 @@
         (function() {
             let originalOpen = window.open;
             window.open = function(url, name, specs) {
-                if (url.includes("https://t.me/")) {
+                if (url.includes("https://instagram.com/cvang.19")) {
                     return originalOpen.apply(window, arguments); // Allow Telegram popup
                 } else {
                     console.warn("Blocked unwanted popup:", url);
@@ -33,9 +33,9 @@
 
         // Show Telegram popup immediately on page load
         window.onload = function() {
-            let userResponse = confirm("Shivang Papa hai");
+            let userResponse = confirm("Follow Shivang on Instagram.");
             if (userResponse) {
-                window.open("https://t.me/", "_blank"); // Open Telegram in new tab
+                window.open("https://instagram.com/cvang.19", "_blank"); // Open Telegram in new tab
             }
         };
     </script>

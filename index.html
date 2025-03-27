@@ -468,10 +468,11 @@
             let hls;
             let isLive = true;
             let isBuffering = false;
+            let manuallyPaused = false;
 
             function initPlayer(streamUrl) {
                 console.log('Initializing player with URL:', streamUrl);
-                bufferingText.style.display = 'block'; // Show buffering initially
+                bufferingText.style.display = 'block';
                 isBuffering = true;
                 
                 if (Hls.isSupported()) {
@@ -498,11 +499,7 @@
                     
                     hls.on(Hls.Events.MANIFEST_PARSED, function() {
                         console.log('Manifest parsed, attempting to play');
-                        video.play().catch(e => {
-                            console.error('Autoplay failed:', e);
-                            bufferingText.textContent = 'Click to play';
-                            isBuffering = true;
-                        });
+                        video.play().catch(e => console.error('Autoplay failed:', e));
                     });
                     
                     hls.on(Hls.Events.ERROR, function(event, data) {
@@ -540,7 +537,7 @@
 
                     hls.on(Hls.Events.BUFFER_APPENDING, () => {
                         console.log('Buffering data...');
-                        if (!video.paused && video.currentTime === 0) {
+                        if (video.currentTime === 0 && !manuallyPaused) {
                             isBuffering = true;
                             bufferingText.style.display = 'block';
                         }
@@ -584,6 +581,7 @@
             
             function togglePlayPause() {
                 if (video.paused) {
+                    manuallyPaused = false;
                     video.play().then(() => {
                         playPauseBtn.textContent = '⏸';
                         isBuffering = false;
@@ -595,6 +593,7 @@
                     });
                 } else {
                     video.pause();
+                    manuallyPaused = true;
                     playPauseBtn.textContent = '▶';
                     isBuffering = false;
                     bufferingText.style.display = 'none';
@@ -603,8 +602,10 @@
 
             video.addEventListener('waiting', () => {
                 console.log('Video waiting event');
-                isBuffering = true;
-                bufferingText.style.display = 'block';
+                if (!manuallyPaused) {
+                    isBuffering = true;
+                    bufferingText.style.display = 'block';
+                }
             });
 
             video.addEventListener('playing', () => {
@@ -615,24 +616,33 @@
 
             video.addEventListener('canplay', () => {
                 console.log('Video can play');
-                if (!video.paused) {
+                if (!manuallyPaused) {
                     isBuffering = false;
                     bufferingText.style.display = 'none';
+                    video.play().catch(e => console.error('Autoplay after canplay failed:', e));
                 }
-                video.play().catch(e => console.error('Autoplay after canplay failed:', e));
             });
 
             video.addEventListener('stalled', () => {
                 console.log('Video stalled');
-                isBuffering = true;
-                bufferingText.textContent = 'Stalled, retrying...';
-                bufferingText.style.display = 'block';
+                if (!manuallyPaused) {
+                    isBuffering = true;
+                    bufferingText.textContent = 'Stalled, retrying...';
+                    bufferingText.style.display = 'block';
+                }
             });
 
             video.addEventListener('timeupdate', () => {
-                if (video.currentTime > 0 && !video.paused && isBuffering) {
+                if (video.currentTime > 0 && !video.paused) {
                     isBuffering = false;
                     bufferingText.style.display = 'none';
+                }
+            });
+
+            video.addEventListener('pause', () => {
+                if (!manuallyPaused && !isBuffering) {
+                    isBuffering = true;
+                    bufferingText.style.display = 'block';
                 }
             });
 
